@@ -128,6 +128,7 @@ export function AuthProvider({ children }) {
         accessToken,
         user,
         loading,
+        setUser,
         login,
         signup,
         logout,

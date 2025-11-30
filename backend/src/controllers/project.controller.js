@@ -3,7 +3,7 @@ const prisma = require('../prismaClient');
 // Create a new project
 exports.createProject = async (req, res) => {
     try {
-        const { title, description, techStack, images, isPublished, repoUrl, liveUrl } = req.body;
+        const { title, description, techStack, images, isPublished, repoUrl, liveUrl, documentUrl } = req.body;
         const userId = req.user.userId;
 
         // Lowercase tech stack
@@ -17,6 +17,7 @@ exports.createProject = async (req, res) => {
                 images: images || [],
                 repoUrl,
                 liveUrl,
+                documentUrl,
                 isPublished: isPublished || false,
                 userId,
             },
@@ -41,6 +42,7 @@ exports.getProjects = async (req, res) => {
                 OR: [
                     { title: { contains: search, mode: 'insensitive' } },
                     { description: { contains: search, mode: 'insensitive' } },
+                    { user: { name: { contains: search, mode: 'insensitive' } } }
                 ],
             }),
         };
@@ -55,11 +57,28 @@ exports.getProjects = async (req, res) => {
             }
         }
 
-        const orderBy = sort === 'popular'
-            ? { viewCount: 'desc' }
-            : sort === 'votes'
-                ? { voteCount: 'desc' }
-                : { createdAt: 'desc' };
+        let orderBy;
+        switch (sort) {
+            case 'oldest':
+                orderBy = { createdAt: 'asc' };
+                break;
+            case 'most_voted':
+                orderBy = { voteCount: 'desc' };
+                break;
+            case 'least_voted':
+                orderBy = { voteCount: 'asc' };
+                break;
+            case 'most_viewed':
+                orderBy = { viewCount: 'desc' };
+                break;
+            case 'least_viewed':
+                orderBy = { viewCount: 'asc' };
+                break;
+            case 'newest':
+            default:
+                orderBy = { createdAt: 'desc' };
+                break;
+        }
 
         const [projects, total] = await Promise.all([
             prisma.project.findMany({
@@ -127,7 +146,7 @@ exports.getProjectById = async (req, res) => {
 exports.updateProject = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, techStack, images, isPublished, repoUrl, liveUrl } = req.body;
+        const { title, description, techStack, images, isPublished, repoUrl, liveUrl, documentUrl } = req.body;
         const userId = req.user.userId;
 
         // Verify ownership
@@ -147,6 +166,7 @@ exports.updateProject = async (req, res) => {
                 images,
                 repoUrl,
                 liveUrl,
+                documentUrl,
                 isPublished,
             },
         });
@@ -154,7 +174,8 @@ exports.updateProject = async (req, res) => {
         res.json(project);
     } catch (error) {
         console.error('Update project error:', error);
-        res.status(500).json({ error: 'Failed to update project' });
+        // Return the actual error message for debugging
+        res.status(500).json({ error: 'Failed to update project', details: error.message });
     }
 };
 

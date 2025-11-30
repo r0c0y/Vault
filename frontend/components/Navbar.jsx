@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "../lib/AuthContext";
 import { useRouter } from "next/router";
-import { LogOut, User, Settings, Menu, X, Compass, Layout as LayoutIcon, Plus, Heart } from "lucide-react";
+import { LogOut, User, Settings, Menu, X, Compass, Layout as LayoutIcon, Plus, Heart, GitCompare } from "lucide-react";
 import Button from "./Button";
 
 export default function Navbar() {
@@ -55,7 +55,7 @@ export default function Navbar() {
               href="/match"
               className={`flex items-center gap-2 text-sm font-medium transition-colors duration-200 ${isActive('/match') ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
             >
-              <Heart size={18} />
+              <GitCompare size={18} />
               Match
             </Link>
             {user && (

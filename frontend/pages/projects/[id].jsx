@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { getProjectById } from '../../lib/api';
 import { useAuth } from '../../lib/AuthContext';
 import Button from '../../components/Button';
-import { ArrowLeft, Calendar, Eye, Share2, UserPlus, Github, Globe, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, Eye, Share2, UserPlus, Github, Globe, ExternalLink, ThumbsUp, MessageSquare, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ProjectView() {
@@ -107,6 +107,17 @@ export default function ProjectView() {
                         <p className="text-text-secondary leading-relaxed whitespace-pre-wrap">
                             {project.description}
                         </p>
+                        {project.documentUrl && (
+                            <a
+                                href={project.documentUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-surface border border-border text-text-primary font-medium hover:border-primary/50 transition-all duration-200"
+                            >
+                                <FileText size={20} />
+                                View Documentation
+                            </a>
+                        )}
                     </div>
 
                     {/* Tech Stack */}

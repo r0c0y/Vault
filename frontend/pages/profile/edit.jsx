@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../lib/AuthContext';
-import { updateProfile } from '../../lib/api';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { ArrowLeft, Save, Upload } from 'lucide-react';
@@ -9,7 +8,7 @@ import Link from 'next/link';
 
 export default function EditProfile() {
     const router = useRouter();
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, authFetch, setUser } = useAuth();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -18,10 +17,12 @@ export default function EditProfile() {
         bannerUrl: '',
         location: '',
         portfolioUrl: '',
+        resumeUrl: '',
         socials: {
             github: '',
             linkedin: '',
-            twitter: ''
+            twitter: '',
+            discord: ''
         }
     });
 
@@ -39,10 +40,12 @@ export default function EditProfile() {
                 bannerUrl: user.bannerUrl || '',
                 location: user.location || '',
                 portfolioUrl: user.portfolioUrl || '',
+                resumeUrl: user.resumeUrl || '',
                 socials: {
                     github: user.socials?.github || '',
                     linkedin: user.socials?.linkedin || '',
-                    twitter: user.socials?.twitter || ''
+                    twitter: user.socials?.twitter || '',
+                    discord: user.socials?.discord || ''
                 }
             });
         }
@@ -53,7 +56,11 @@ export default function EditProfile() {
         setLoading(true);
 
         try {
-            await updateProfile(formData);
+            const res = await authFetch('/auth/profile', {
+                method: 'PUT',
+                data: formData
+            });
+            setUser(res.data);
             // Ideally update AuthContext user here, but a page reload or re-fetch works too
             router.push(`/user/${user.id}`);
         } catch (error) {
@@ -93,8 +100,8 @@ export default function EditProfile() {
                             onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
                         />
                         <Input
-                            label="Banner URL (or Hex Color)"
-                            placeholder="https://example.com/banner.jpg or #1a1a1a"
+                            label="Banner URL"
+                            placeholder="https://example.com/banner.jpg"
                             value={formData.bannerUrl}
                             onChange={(e) => setFormData({ ...formData, bannerUrl: e.target.value })}
                         />
@@ -132,11 +139,17 @@ export default function EditProfile() {
                             value={formData.portfolioUrl}
                             onChange={(e) => setFormData({ ...formData, portfolioUrl: e.target.value })}
                         />
+                        <Input
+                            label="Resume URL"
+                            placeholder="https://docs.google.com/..."
+                            value={formData.resumeUrl}
+                            onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
+                        />
                     </div>
 
                     <div className="space-y-4 pt-4 border-t border-white/5">
                         <h3 className="text-lg font-medium text-text-primary">Social Links</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <Input
                                 label="GitHub URL"
                                 placeholder="https://github.com/username"
@@ -154,6 +167,12 @@ export default function EditProfile() {
                                 placeholder="https://x.com/username"
                                 value={formData.socials.twitter}
                                 onChange={(e) => setFormData({ ...formData, socials: { ...formData.socials, twitter: e.target.value } })}
+                            />
+                            <Input
+                                label="Discord Username/Invite"
+                                placeholder="username#1234 or Invite Link"
+                                value={formData.socials.discord}
+                                onChange={(e) => setFormData({ ...formData, socials: { ...formData.socials, discord: e.target.value } })}
                             />
                         </div>
                     </div>

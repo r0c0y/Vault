@@ -8,7 +8,7 @@ import { Heart, X, Compass, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Match() {
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, authFetch } = useAuth();
     const router = useRouter();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -44,7 +44,8 @@ export default function Match() {
         setAnimating(true);
 
         try {
-            await voteProject(selectedId);
+            // Use authFetch to handle token refresh automatically
+            await authFetch(`/projects/${selectedId}/vote`, { method: 'POST' });
 
             // Simple timeout to simulate animation before fetching new pair
             setTimeout(() => {
@@ -96,8 +97,11 @@ export default function Match() {
                 {projects.map((project, index) => (
                     <div
                         key={project.id}
-                        className={`transition-all duration-500 transform ${animating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
-                        style={{ transitionDelay: `${index * 100}ms` }}
+                        className={`transition-all duration-500 ease-out transform ${animating
+                            ? index === 0 ? '-translate-x-full opacity-0' : 'translate-x-full opacity-0'
+                            : 'translate-x-0 opacity-100'
+                            }`}
+                        style={{ transitionDelay: animating ? '0ms' : `${index * 200}ms` }}
                     >
                         <Card className="h-full flex flex-col hover:border-primary/50 transition-colors group relative overflow-hidden">
                             {/* Image */}
@@ -159,9 +163,11 @@ export default function Match() {
 
                                 <Button
                                     onClick={() => handleVote(project.id)}
-                                    className="w-full gap-2 py-4 text-lg group-hover:bg-primary group-hover:text-background transition-colors"
+                                    className={`w-full py-4 text-lg text-white hover:opacity-90 transition-opacity border-none shadow-lg ${index === 0
+                                        ? 'bg-gradient-to-r from-blue-600 to-cyan-500' // Left card: Blue/Cyan
+                                        : 'bg-gradient-to-r from-purple-600 to-pink-500' // Right card: Purple/Pink
+                                        }`}
                                 >
-                                    <Heart size={20} className={animating ? "animate-ping" : ""} />
                                     Vote for {project.title}
                                 </Button>
                             </div>

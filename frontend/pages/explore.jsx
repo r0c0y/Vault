@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import { getProjects } from '../lib/api';
-import Link from 'next/link';
 import { Search, Filter, Github, ExternalLink, Compass, X } from 'lucide-react';
 import Card from '../components/Card';
 import Pagination from '../components/Pagination';
@@ -9,10 +9,12 @@ import Button from '../components/Button';
 import { TECH_STACKS } from '../lib/constants';
 
 export default function Explore() {
+    const router = useRouter();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [selectedTech, setSelectedTech] = useState([]);
+    const [sort, setSort] = useState('newest');
     const [showFilters, setShowFilters] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -23,7 +25,7 @@ export default function Explore() {
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [search, selectedTech, page]);
+    }, [search, selectedTech, sort, page]);
 
     const fetchProjects = async () => {
         try {
@@ -32,7 +34,8 @@ export default function Explore() {
                 page,
                 limit: 21,
                 search: search || undefined,
-                tech: selectedTech.length > 0 ? selectedTech.join(',') : undefined
+                tech: selectedTech.length > 0 ? selectedTech.join(',') : undefined,
+                sort
             });
             setProjects(data.projects);
             setTotalPages(data.pagination.pages);
@@ -54,6 +57,7 @@ export default function Explore() {
 
     const clearFilters = () => {
         setSelectedTech([]);
+        setSort('newest');
         setPage(1);
     };
 
@@ -101,8 +105,25 @@ export default function Explore() {
                 {/* Collapsible Filter Menu */}
                 {(showFilters || selectedTech.length > 0) && (
                     <div className="bg-surface border border-border rounded-xl p-6 mb-8 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-medium text-text-primary">Filter by Tech Stack</h3>
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                            <div className="flex items-center gap-4">
+                                <h3 className="font-medium text-text-primary">Filter by Tech Stack</h3>
+                                <select
+                                    value={sort}
+                                    onChange={(e) => {
+                                        setSort(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    className="px-3 py-1.5 rounded-lg bg-background border border-border text-sm text-text-primary focus:outline-none focus:border-primary/50 cursor-pointer appearance-none"
+                                >
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="most_voted">Most Voted</option>
+                                    <option value="least_voted">Least Voted</option>
+                                    <option value="most_viewed">Most Viewed</option>
+                                    <option value="least_viewed">Least Viewed</option>
+                                </select>
+                            </div>
                             {selectedTech.length > 0 && (
                                 <button
                                     onClick={clearFilters}
@@ -140,83 +161,87 @@ export default function Explore() {
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                             {projects.map((project) => (
-                                <Link key={project.id} href={`/projects/${project.id}`}>
-                                    <Card className="h-full group cursor-pointer hover:border-primary/30 flex flex-col">
-                                        <div className="aspect-video bg-surface rounded-xl mb-4 overflow-hidden relative">
-                                            {project.images && project.images.length > 0 ? (
-                                                <img
-                                                    src={project.images[0]}
-                                                    alt={project.title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                />
+                                <Card
+                                    key={project.id}
+                                    onClick={() => router.push(`/projects/${project.id}`)}
+                                    className="h-full group cursor-pointer hover:border-primary/30 flex flex-col"
+                                >
+                                    <div className="aspect-video bg-surface rounded-xl mb-4 overflow-hidden relative">
+                                        {project.images && project.images.length > 0 ? (
+                                            <img
+                                                src={project.images[0]}
+                                                alt={project.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface to-card">
+                                                <Compass className="text-text-secondary/20" size={48} />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <h3 className="text-xl font-heading font-semibold text-text-primary mb-2 group-hover:text-primary transition-colors line-clamp-1">
+                                        {project.title}
+                                    </h3>
+                                    <p className="text-text-secondary text-sm line-clamp-2 mb-4 flex-grow">
+                                        {project.description}
+                                    </p>
+
+                                    <div className="flex flex-wrap gap-2 mt-auto">
+                                        {project.techStack.slice(0, 3).map((tech, i) => (
+                                            <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 text-text-secondary border border-white/5">
+                                                {tech}
+                                            </span>
+                                        ))}
+                                        {project.techStack.length > 3 && (
+                                            <span className="text-xs px-2 py-1 rounded-md bg-white/5 text-text-secondary border border-white/5">
+                                                +{project.techStack.length - 3}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
+                                        <div className="w-6 h-6 rounded-full bg-surface overflow-hidden">
+                                            {project.user.avatarUrl ? (
+                                                <img src={project.user.avatarUrl} alt={project.user.name} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface to-card">
-                                                    <Compass className="text-text-secondary/20" size={48} />
+                                                <div className="w-full h-full flex items-center justify-center bg-primary/20 text-primary text-[10px] font-bold">
+                                                    {project.user.name.charAt(0)}
                                                 </div>
                                             )}
                                         </div>
-
-                                        <h3 className="text-xl font-heading font-semibold text-text-primary mb-2 group-hover:text-primary transition-colors line-clamp-1">
-                                            {project.title}
-                                        </h3>
-                                        <p className="text-text-secondary text-sm line-clamp-2 mb-4 flex-grow">
-                                            {project.description}
-                                        </p>
-
-                                        <div className="flex flex-wrap gap-2 mt-auto">
-                                            {project.techStack.slice(0, 3).map((tech, i) => (
-                                                <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 text-text-secondary border border-white/5">
-                                                    {tech}
-                                                </span>
-                                            ))}
-                                            {project.techStack.length > 3 && (
-                                                <span className="text-xs px-2 py-1 rounded-md bg-white/5 text-text-secondary border border-white/5">
-                                                    +{project.techStack.length - 3}
-                                                </span>
+                                        <span className="text-xs text-text-secondary truncate">
+                                            by {project.user.name}
+                                        </span>
+                                        <div className="ml-auto flex items-center gap-2">
+                                            {project.repoUrl && (
+                                                <a
+                                                    href={project.repoUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="text-text-secondary hover:text-text-primary transition-colors"
+                                                >
+                                                    <Github size={16} />
+                                                </a>
+                                            )}
+                                            {project.liveUrl && (
+                                                <a
+                                                    href={project.liveUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="text-text-secondary hover:text-primary transition-colors"
+                                                >
+                                                    <ExternalLink size={16} />
+                                                </a>
                                             )}
                                         </div>
-
-                                        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
-                                            <div className="w-6 h-6 rounded-full bg-surface overflow-hidden">
-                                                {project.user.avatarUrl ? (
-                                                    <img src={project.user.avatarUrl} alt={project.user.name} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-primary/20 text-primary text-[10px] font-bold">
-                                                        {project.user.name.charAt(0)}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <span className="text-xs text-text-secondary truncate">
-                                                by {project.user.name}
-                                            </span>
-                                            <div className="ml-auto flex items-center gap-2">
-                                                {project.repoUrl && (
-                                                    <a
-                                                        href={project.repoUrl}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        className="text-text-secondary hover:text-text-primary transition-colors"
-                                                    >
-                                                        <Github size={16} />
-                                                    </a>
-                                                )}
-                                                {project.liveUrl && (
-                                                    <a
-                                                        href={project.liveUrl}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        className="text-text-secondary hover:text-primary transition-colors"
-                                                    >
-                                                        <ExternalLink size={16} />
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </Link>
-                            ))}
+                                    </div>
+                                </Card>
+                            ))
+                            }
+                            ))
                         </div>
 
                         {/* Pagination */}
@@ -238,7 +263,8 @@ export default function Explore() {
                         <button
                             onClick={() => {
                                 setSearch('');
-                                setSelectedTech('');
+                                setSelectedTech([]);
+                                setSort('newest');
                             }}
                             className="mt-6 text-primary hover:underline font-medium"
                         >

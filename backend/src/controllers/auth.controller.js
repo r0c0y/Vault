@@ -56,7 +56,19 @@ exports.signup = async (req, res) => {
     return res.status(201).json({
       message: "User created successfully",
       accessToken,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        avatarUrl: user.avatarUrl,
+        bannerUrl: user.bannerUrl,
+        location: user.location,
+        portfolioUrl: user.portfolioUrl,
+        resumeUrl: user.resumeUrl,
+        socials: user.socials,
+        createdAt: user.createdAt
+      },
     });
   } catch (err) {
     console.error("Signup error:", err);
@@ -104,7 +116,19 @@ exports.login = async (req, res) => {
     return res.json({
       message: "Logged in successfully",
       accessToken,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        avatarUrl: user.avatarUrl,
+        bannerUrl: user.bannerUrl,
+        location: user.location,
+        portfolioUrl: user.portfolioUrl,
+        resumeUrl: user.resumeUrl,
+        socials: user.socials,
+        createdAt: user.createdAt
+      },
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -152,7 +176,19 @@ exports.refresh = async (req, res) => {
 
     return res.json({
       accessToken: newAccess,
-      user: { id: user.id, email: user.email, name: user.name },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        bio: user.bio,
+        avatarUrl: user.avatarUrl,
+        bannerUrl: user.bannerUrl,
+        location: user.location,
+        portfolioUrl: user.portfolioUrl,
+        resumeUrl: user.resumeUrl,
+        socials: user.socials,
+        createdAt: user.createdAt
+      },
     });
   } catch (err) {
     console.error("Refresh error:", err);
@@ -205,6 +241,13 @@ exports.me = async (req, res) => {
       id: dbUser.id,
       name: dbUser.name,
       email: dbUser.email,
+      bio: dbUser.bio,
+      avatarUrl: dbUser.avatarUrl,
+      bannerUrl: dbUser.bannerUrl,
+      location: dbUser.location,
+      portfolioUrl: dbUser.portfolioUrl,
+      resumeUrl: dbUser.resumeUrl,
+      socials: dbUser.socials,
       createdAt: dbUser.createdAt,
     });
   } catch (err) {
@@ -238,6 +281,10 @@ exports.getUserProfile = async (req, res) => {
         name: true,
         bio: true,
         avatarUrl: true,
+        bannerUrl: true,
+        location: true,
+        portfolioUrl: true,
+        resumeUrl: true,
         socials: true,
         createdAt: true,
         _count: {
@@ -324,7 +371,7 @@ exports.unfollowUser = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { name, bio, avatarUrl, bannerUrl, location, portfolioUrl, socials } = req.body;
+    const { name, bio, avatarUrl, bannerUrl, location, portfolioUrl, resumeUrl, socials } = req.body;
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -335,6 +382,7 @@ exports.updateProfile = async (req, res) => {
         bannerUrl,
         location,
         portfolioUrl,
+        resumeUrl,
         socials
       },
       select: {
@@ -346,6 +394,7 @@ exports.updateProfile = async (req, res) => {
         bannerUrl: true,
         location: true,
         portfolioUrl: true,
+        resumeUrl: true,
         socials: true,
         createdAt: true
       }

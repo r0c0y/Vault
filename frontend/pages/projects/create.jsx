@@ -107,6 +107,13 @@ export default function CreateProject() {
                         />
                     </div>
 
+                    <Input
+                        label="Document URL (Pitch Deck, PDF, etc.)"
+                        placeholder="https://example.com/pitch-deck.pdf"
+                        value={formData.documentUrl || ''}
+                        onChange={(e) => setFormData({ ...formData, documentUrl: e.target.value })}
+                    />
+
                     <div className="flex items-center gap-3 p-4 bg-surface rounded-xl border border-border">
                         <input
                             type="checkbox"

@@ -18,7 +18,8 @@ model User {
   bannerUrl    String?
   location     String?
   portfolioUrl String?
-  socials      Json?    // { github: "", linkedin: "", twitter: "" }
+  resumeUrl    String?
+  socials      Json?    // { github: "", linkedin: "", twitter: "", discord: "" }
   createdAt    DateTime @default(now())
   
   projects        Project[]
@@ -48,6 +49,7 @@ model Project {
   images      String[]
   repoUrl     String?
   liveUrl     String?
+  documentUrl String?
   isPublished Boolean  @default(false)
   viewCount   Int      @default(0)
   voteCount   Int      @default(0)

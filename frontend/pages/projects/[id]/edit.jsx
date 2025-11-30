@@ -31,8 +31,11 @@ export default function EditProject() {
             setFormData({
                 title: data.title,
                 description: data.description,
-                techStack: data.techStack.join(', '),
+                techStack: Array.isArray(data.techStack) ? data.techStack.join(', ') : data.techStack,
                 images: data.images.join(', '),
+                repoUrl: data.repoUrl || '',
+                liveUrl: data.liveUrl || '',
+                documentUrl: data.documentUrl || '',
                 isPublished: data.isPublished
             });
         } catch (error) {
@@ -119,6 +122,13 @@ export default function EditProject() {
                         placeholder="e.g. https://example.com/image1.png"
                         value={formData.images}
                         onChange={(e) => setFormData({ ...formData, images: e.target.value })}
+                    />
+
+                    <Input
+                        label="Document URL (Pitch Deck, PDF, etc.)"
+                        placeholder="https://example.com/pitch-deck.pdf"
+                        value={formData.documentUrl || ''}
+                        onChange={(e) => setFormData({ ...formData, documentUrl: e.target.value })}
                     />
 
                     <div className="flex items-center gap-3 p-4 bg-surface rounded-xl border border-border">
