@@ -114,7 +114,7 @@ export default function PublicProfile() {
         <div className="min-h-screen pb-12">
             {/* Banner Section */}
             <div
-                className="h-64 w-full bg-cover bg-center relative"
+                className="h-48 md:h-64 w-full bg-cover bg-center relative"
                 style={{
                     backgroundImage: profile.bannerUrl?.startsWith('http') ? `url(${profile.bannerUrl})` : undefined,
                     backgroundColor: !profile.bannerUrl?.startsWith('http') ? (profile.bannerUrl || '#1a1a1a') : undefined

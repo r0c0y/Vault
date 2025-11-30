@@ -15,9 +15,7 @@ export default function Match() {
     const [animating, setAnimating] = useState(false);
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            router.push('/login');
-        } else if (user) {
+        if (!authLoading && user) {
             fetchProjects();
         }
     }, [user, authLoading]);
@@ -58,7 +56,30 @@ export default function Match() {
         }
     };
 
-    if (authLoading || loading) {
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+                <Compass size={64} className="text-primary mb-6" />
+                <h1 className="text-3xl font-heading font-bold text-text-primary mb-4">Match Projects</h1>
+                <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-6 py-3 rounded-xl text-lg font-medium mb-8">
+                    Please login to use the Match feature
+                </div>
+                <Link href="/login">
+                    <Button>Log in to Continue</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -88,7 +109,7 @@ export default function Match() {
                 <p className="text-text-secondary text-lg">Choose the project that catches your eye. Swipe or click to vote!</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl w-full relative">
                 {/* VS Badge */}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-background border-4 border-primary rounded-full w-16 h-16 flex items-center justify-center shadow-glow hidden md:flex">
                     <span className="font-heading font-bold text-xl text-primary">VS</span>
@@ -163,10 +184,7 @@ export default function Match() {
 
                                 <Button
                                     onClick={() => handleVote(project.id)}
-                                    className={`w-full py-4 text-lg text-white hover:opacity-90 transition-opacity border-none shadow-lg ${index === 0
-                                        ? 'bg-gradient-to-r from-blue-600 to-cyan-500' // Left card: Blue/Cyan
-                                        : 'bg-gradient-to-r from-purple-600 to-pink-500' // Right card: Purple/Pink
-                                        }`}
+                                    className="w-full py-4 text-lg text-white hover:opacity-90 transition-opacity border-none shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500"
                                 >
                                     Vote for {project.title}
                                 </Button>

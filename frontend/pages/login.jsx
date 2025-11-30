@@ -27,7 +27,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow">
-        <h1 className="text-2xl font-semibold mb-6">Sign in</h1>
+        <h1 className="text-2xl font-semibold mb-7">Sign in</h1>
 
         {err && <div className="text-red-600 mb-4 text-sm">{err}</div>}
 

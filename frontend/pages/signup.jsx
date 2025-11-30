@@ -27,7 +27,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow">
-        <h1 className="text-2xl font-semibold mb-6">Create account</h1>
+        <h1 className="text-2xl font-semibold mb-6 text-slate-800">Create account</h1>
 
         {err && <div className="text-red-600 mb-4 text-sm">{err}</div>}
 

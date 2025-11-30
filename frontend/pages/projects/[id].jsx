@@ -135,7 +135,7 @@ export default function ProjectView() {
 
                 {/* Sidebar */}
                 <div className="space-y-6">
-                    <div className="bg-card border border-border rounded-2xl p-6 shadow-glass sticky top-24">
+                    <div className="bg-card border border-border rounded-2xl p-6 shadow-glass lg:sticky lg:top-24">
                         <div className="flex flex-wrap gap-4 mt-6">
                             {project.repoUrl && (
                                 <a

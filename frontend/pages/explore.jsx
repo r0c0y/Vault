@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../lib/AuthContext';
 import { useRouter } from 'next/router';
 import { getProjects } from '../lib/api';
 import { Search, Filter, Github, ExternalLink, Compass, X } from 'lucide-react';
@@ -8,7 +9,10 @@ import { gsap } from 'gsap';
 import Button from '../components/Button';
 import { TECH_STACKS } from '../lib/constants';
 
+import Link from 'next/link';
+
 export default function Explore() {
+    const { user } = useAuth();
     const router = useRouter();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -60,6 +64,21 @@ export default function Explore() {
         setSort('newest');
         setPage(1);
     };
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+                <Compass size={64} className="text-primary mb-6" />
+                <h1 className="text-3xl font-heading font-bold text-text-primary mb-4">Explore Projects</h1>
+                <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-6 py-3 rounded-xl text-lg font-medium mb-8">
+                    Please login to view projects
+                </div>
+                <Link href="/login">
+                    <Button>Log in to Continue</Button>
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen pb-12">
@@ -241,7 +260,7 @@ export default function Explore() {
                                 </Card>
                             ))
                             }
-                            ))
+
                         </div>
 
                         {/* Pagination */}

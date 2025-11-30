@@ -8,6 +8,7 @@ import Button from "./Button";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const menuRef = useRef(null);
 
@@ -25,7 +26,8 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setShowMenu(false);
-    router.push('/login');
+    setIsMobileMenuOpen(false);
+    router.push('/');
   };
 
   const isActive = (path) => router.pathname === path;
@@ -127,8 +129,96 @@ export default function Navbar() {
               </div>
             )}
           </div>
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center gap-4">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-text-secondary hover:text-text-primary focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-surface border-b border-border animate-in slide-in-from-top-5 duration-200">
+          <div className="px-4 pt-2 pb-4 space-y-1">
+            <Link
+              href="/explore"
+              className={`block px-3 py-3 rounded-lg text-base font-medium ${isActive('/explore') ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-3">
+                <Compass size={20} />
+                Explore
+              </div>
+            </Link>
+            <Link
+              href="/match"
+              className={`block px-3 py-3 rounded-lg text-base font-medium ${isActive('/match') ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-3">
+                <GitCompare size={20} />
+                Match
+              </div>
+            </Link>
+            {user && (
+              <Link
+                href="/dashboard"
+                className={`block px-3 py-3 rounded-lg text-base font-medium ${isActive('/dashboard') ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <LayoutIcon size={20} />
+                  Dashboard
+                </div>
+              </Link>
+            )}
+
+            <div className="border-t border-white/5 my-2 pt-2">
+              {user ? (
+                <>
+                  <div className="px-3 py-2">
+                    <p className="text-sm font-medium text-text-primary">{user.name}</p>
+                    <p className="text-xs text-text-secondary truncate">{user.email}</p>
+                  </div>
+                  <Link
+                    href={`/user/${user.id}`}
+                    className="block px-3 py-3 rounded-lg text-base font-medium text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <User size={20} />
+                      Profile
+                    </div>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left block px-3 py-3 rounded-lg text-base font-medium text-red-400 hover:bg-red-500/10"
+                  >
+                    <div className="flex items-center gap-3">
+                      <LogOut size={20} />
+                      Logout
+                    </div>
+                  </button>
+                </>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 px-3 py-2">
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-center">Log in</Button>
+                  </Link>
+                  <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="primary" className="w-full justify-center">Sign up</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
