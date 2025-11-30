@@ -61,6 +61,23 @@ exports.getAllProjects = async (req, res) => {
     }
 };
 
+exports.getProjectDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const project = await prisma.project.findUnique({
+            where: { id },
+            include: {
+                user: { select: { name: true, email: true, avatarUrl: true } }
+            }
+        });
+        if (!project) return res.status(404).json({ message: 'Project not found' });
+        res.json(project);
+    } catch (error) {
+        console.error('Admin get project details error:', error);
+        res.status(500).json({ message: 'Failed to fetch project details' });
+    }
+};
+
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -134,5 +151,23 @@ exports.toggleFeatureProject = async (req, res) => {
     } catch (error) {
         console.error('Toggle feature error:', error);
         res.status(500).json({ message: 'Failed to toggle feature status' });
+    }
+};
+
+// Toggle Project Publish Status (Shadowban)
+exports.togglePublishProject = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const project = await prisma.project.findUnique({ where: { id } });
+        if (!project) return res.status(404).json({ message: 'Project not found' });
+
+        const updatedProject = await prisma.project.update({
+            where: { id },
+            data: { isPublished: !project.isPublished }
+        });
+        res.json({ message: `Project ${updatedProject.isPublished ? 'published' : 'hidden'}`, isPublished: updatedProject.isPublished });
+    } catch (error) {
+        console.error('Toggle publish error:', error);
+        res.status(500).json({ message: 'Failed to toggle publish status' });
     }
 };

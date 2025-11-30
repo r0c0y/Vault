@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
-import { Trash2, Users, Folder, Eye, ThumbsUp, Shield, Activity, Lock, Zap, Ban, CheckCircle, Star } from 'lucide-react';
+import { Trash2, Users, Folder, Eye, EyeOff, ThumbsUp, Shield, Activity, Lock, Zap, Ban, CheckCircle, Star, BarChart2, X, ExternalLink, Github, FileText } from 'lucide-react';
 
 export default function GhostDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,6 +12,7 @@ export default function GhostDashboard() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedProject, setSelectedProject] = useState(null); // For modal
 
   // Use the deployed API URL or local if running locally
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
@@ -64,6 +65,15 @@ export default function GhostDashboard() {
     }
   };
 
+  const fetchProjectDetails = async (id) => {
+    try {
+      const res = await axios.get(`${API_URL}/admin/projects/${id}`, { headers });
+      setSelectedProject(res.data);
+    } catch (err) {
+      alert('Failed to fetch project details');
+    }
+  };
+
   // Actions
   const handleDeleteUser = async (id) => {
     if (!window.confirm('Are you sure? This will delete the user and ALL their data.')) return;
@@ -98,6 +108,7 @@ export default function GhostDashboard() {
     try {
       await axios.delete(`${API_URL}/admin/projects/${id}`, { headers });
       setProjects(projects.filter(p => p.id !== id));
+      if (selectedProject?.id === id) setSelectedProject(null);
     } catch (err) {
       alert('Failed to delete project');
     }
@@ -106,9 +117,22 @@ export default function GhostDashboard() {
   const handleToggleFeature = async (id) => {
     try {
       const res = await axios.put(`${API_URL}/admin/projects/${id}/feature`, {}, { headers });
-      setProjects(projects.map(p => p.id === id ? { ...p, isFeatured: res.data.isFeatured } : p));
+      const updated = projects.map(p => p.id === id ? { ...p, isFeatured: res.data.isFeatured } : p);
+      setProjects(updated);
+      if (selectedProject?.id === id) setSelectedProject({ ...selectedProject, isFeatured: res.data.isFeatured });
     } catch (err) {
       alert('Failed to toggle feature');
+    }
+  };
+
+  const handleTogglePublish = async (id) => {
+    try {
+      const res = await axios.put(`${API_URL}/admin/projects/${id}/publish`, {}, { headers });
+      const updated = projects.map(p => p.id === id ? { ...p, isPublished: res.data.isPublished } : p);
+      setProjects(updated);
+      if (selectedProject?.id === id) setSelectedProject({ ...selectedProject, isPublished: res.data.isPublished });
+    } catch (err) {
+      alert('Failed to toggle publish status');
     }
   };
 
@@ -152,7 +176,7 @@ export default function GhostDashboard() {
       <Head><title>God Mode | Vault</title></Head>
 
       {/* Sidebar */}
-      <div className="fixed left-0 top-0 h-full w-64 bg-black border-r border-white/10 p-6">
+      <div className="fixed left-0 top-0 h-full w-64 bg-black border-r border-white/10 p-6 z-10">
         <div className="flex items-center gap-3 mb-12 text-red-500">
           <Shield className="w-8 h-8" />
           <span className="text-xl font-bold tracking-widest">GOD MODE</span>
@@ -178,7 +202,7 @@ export default function GhostDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="ml-64 p-10">
+      <div className="ml-64 p-10 relative">
         {activeTab === 'overview' && stats && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">System Status</h2>
@@ -317,7 +341,7 @@ export default function GhostDashboard() {
                             {project.isFeatured && <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />}
                           </span>
                           <span className={`text-xs ${project.isPublished ? 'text-green-400' : 'text-yellow-400'}`}>
-                            {project.isPublished ? 'PUBLISHED' : 'DRAFT'}
+                            {project.isPublished ? 'PUBLISHED' : 'HIDDEN'}
                           </span>
                         </div>
                       </td>
@@ -327,6 +351,20 @@ export default function GhostDashboard() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => fetchProjectDetails(project.id)}
+                            className="p-2 bg-white/5 text-slate-400 hover:bg-purple-500/20 hover:text-purple-400 rounded transition-colors"
+                            title="Analytics & Details"
+                          >
+                            <BarChart2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleTogglePublish(project.id)}
+                            className={`p-2 rounded transition-colors ${project.isPublished ? 'bg-white/5 text-slate-400 hover:bg-yellow-500/20 hover:text-yellow-400' : 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30'}`}
+                            title={project.isPublished ? "Hide Project (Shadowban)" : "Publish Project"}
+                          >
+                            {project.isPublished ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
                           <button
                             onClick={() => handleToggleFeature(project.id)}
                             className={`p-2 rounded transition-colors ${project.isFeatured ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' : 'bg-white/5 text-slate-400 hover:bg-yellow-500/20 hover:text-yellow-400'}`}
@@ -343,6 +381,125 @@ export default function GhostDashboard() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Project Details Modal */}
+        {selectedProject && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-[#0D0F12] border border-white/10 rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+              <div className="sticky top-0 bg-[#0D0F12] border-b border-white/10 p-6 flex justify-between items-center z-10">
+                <div>
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                    {selectedProject.title}
+                    {selectedProject.isFeatured && <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />}
+                  </h2>
+                  <p className="text-slate-400 text-sm mt-1">by {selectedProject.user.name} ({selectedProject.user.email})</p>
+                </div>
+                <button onClick={() => setSelectedProject(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                  <X className="w-6 h-6 text-slate-400" />
+                </button>
+              </div>
+
+              <div className="p-8 space-y-8">
+                {/* Analytics Cards */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="bg-white/5 p-6 rounded-xl border border-white/10">
+                    <div className="flex items-center gap-3 mb-2 text-green-400">
+                      <Eye className="w-5 h-5" />
+                      <span className="font-bold uppercase tracking-wider text-xs">Total Views</span>
+                    </div>
+                    <div className="text-4xl font-bold text-white">{selectedProject.viewCount}</div>
+                  </div>
+                  <div className="bg-white/5 p-6 rounded-xl border border-white/10">
+                    <div className="flex items-center gap-3 mb-2 text-pink-400">
+                      <ThumbsUp className="w-5 h-5" />
+                      <span className="font-bold uppercase tracking-wider text-xs">Total Votes</span>
+                    </div>
+                    <div className="text-4xl font-bold text-white">{selectedProject.voteCount}</div>
+                  </div>
+                </div>
+
+                {/* Status & Controls */}
+                <div className="flex items-center justify-between bg-white/5 p-6 rounded-xl border border-white/10">
+                  <div className="flex items-center gap-4">
+                    <div className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${selectedProject.isPublished ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                      {selectedProject.isPublished ? 'Published' : 'Hidden'}
+                    </div>
+                    <div className="text-slate-400 text-sm">
+                      Created: {new Date(selectedProject.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => handleTogglePublish(selectedProject.id)}
+                      className={`px-4 py-2 rounded font-medium text-sm transition-colors flex items-center gap-2 ${selectedProject.isPublished ? 'bg-white/5 text-slate-300 hover:bg-yellow-500/20 hover:text-yellow-400' : 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30'}`}
+                    >
+                      {selectedProject.isPublished ? <><EyeOff className="w-4 h-4" /> Hide Project</> : <><Eye className="w-4 h-4" /> Publish Project</>}
+                    </button>
+                    <button
+                      onClick={() => handleToggleFeature(selectedProject.id)}
+                      className={`px-4 py-2 rounded font-medium text-sm transition-colors flex items-center gap-2 ${selectedProject.isFeatured ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' : 'bg-white/5 text-slate-300 hover:bg-yellow-500/20 hover:text-yellow-400'}`}
+                    >
+                      <Star className="w-4 h-4" /> {selectedProject.isFeatured ? "Unfeature" : "Feature"}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="grid grid-cols-3 gap-8">
+                  <div className="col-span-2 space-y-6">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Description</h3>
+                      <p className="text-slate-300 leading-relaxed">{selectedProject.description}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Tech Stack</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProject.techStack.map((tech, i) => (
+                          <span key={i} className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-sm border border-blue-500/20">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    {selectedProject.images && selectedProject.images.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Gallery</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          {selectedProject.images.map((img, i) => (
+                            <img key={i} src={img} alt={`Project ${i}`} className="rounded-lg border border-white/10 w-full h-48 object-cover" />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Links</h3>
+                      <div className="space-y-3">
+                        {selectedProject.repoUrl && (
+                          <a href={selectedProject.repoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-white/5 rounded hover:bg-white/10 transition-colors text-slate-300">
+                            <Github className="w-5 h-5" /> Repository
+                          </a>
+                        )}
+                        {selectedProject.liveUrl && (
+                          <a href={selectedProject.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-white/5 rounded hover:bg-white/10 transition-colors text-slate-300">
+                            <ExternalLink className="w-5 h-5" /> Live Demo
+                          </a>
+                        )}
+                        {selectedProject.documentUrl && (
+                          <a href={selectedProject.documentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 bg-white/5 rounded hover:bg-white/10 transition-colors text-slate-300">
+                            <FileText className="w-5 h-5" /> Documentation
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

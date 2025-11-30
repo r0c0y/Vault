@@ -16,5 +16,9 @@ router.delete('/projects/:id', adminController.deleteProject);
 router.put('/users/:id/ban', adminController.toggleBanUser);
 router.put('/users/:id/verify', adminController.toggleVerifyUser);
 router.put('/projects/:id/feature', adminController.toggleFeatureProject);
+router.put('/projects/:id/publish', adminController.togglePublishProject);
+
+// Details Route
+router.get('/projects/:id', adminController.getProjectDetails);
 
 module.exports = router;
