@@ -4,7 +4,7 @@ export default function Home() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background text-text-primary px-4">
             <Head>
-                <title>Vault - Coming Soon</title>
+                <title>Vault</title>
             </Head>
 
             <div className="text-center animate-in fade-in zoom-in duration-500">

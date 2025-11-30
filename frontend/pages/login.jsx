@@ -27,7 +27,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow">
-        <h1 className="text-2xl font-semibold mb-7">Sign in</h1>
+        <h1 className="text-2xl font-semibold mb-7 text-blue-800 ">Sign in</h1>
 
         {err && <div className="text-red-600 mb-4 text-sm">{err}</div>}
 
@@ -38,7 +38,7 @@ export default function LoginPage() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="Email"
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded text-slate-900"
           />
 
           <input
@@ -47,7 +47,7 @@ export default function LoginPage() {
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             placeholder="Password"
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded text-slate-900"
           />
 
           <button
