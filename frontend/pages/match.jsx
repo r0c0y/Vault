@@ -1,0 +1,174 @@
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useAuth } from '../lib/AuthContext';
+import { getRandomProjects, voteProject } from '../lib/api';
+import Button from '../components/Button';
+import Card from '../components/Card';
+import { Heart, X, Compass, ExternalLink, Github } from 'lucide-react';
+import Link from 'next/link';
+
+export default function Match() {
+    const { user, loading: authLoading } = useAuth();
+    const router = useRouter();
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [animating, setAnimating] = useState(false);
+
+    useEffect(() => {
+        if (!authLoading && !user) {
+            router.push('/login');
+        } else if (user) {
+            fetchProjects();
+        }
+    }, [user, authLoading]);
+
+    const fetchProjects = async () => {
+        setLoading(true);
+        try {
+            const res = await getRandomProjects();
+            // Ensure we have exactly 2 projects (or handle < 2 gracefully)
+            if (res.data && res.data.length >= 2) {
+                setProjects(res.data.slice(0, 2));
+            } else {
+                setProjects([]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch match projects', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleVote = async (selectedId) => {
+        if (animating) return;
+        setAnimating(true);
+
+        try {
+            await voteProject(selectedId);
+
+            // Simple timeout to simulate animation before fetching new pair
+            setTimeout(() => {
+                setAnimating(false);
+                fetchProjects();
+            }, 500);
+        } catch (error) {
+            console.error('Vote failed', error);
+            setAnimating(false);
+        }
+    };
+
+    if (authLoading || loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    if (projects.length < 2) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+                <Compass size={64} className="text-primary mb-6" />
+                <h1 className="text-3xl font-heading font-bold text-text-primary mb-4">No more matches!</h1>
+                <p className="text-text-secondary mb-8 max-w-md">
+                    We've run out of project pairs to show you right now. Check back later or explore manually.
+                </p>
+                <Link href="/explore">
+                    <Button>Go to Explore</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen py-12 px-4 flex flex-col items-center">
+            <div className="text-center mb-12">
+                <h1 className="text-4xl font-heading font-bold bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent mb-4">Pick Your Favorite</h1>
+                <p className="text-text-secondary text-lg">Choose the project that catches your eye. Swipe or click to vote!</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full relative">
+                {/* VS Badge */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-background border-4 border-primary rounded-full w-16 h-16 flex items-center justify-center shadow-glow hidden md:flex">
+                    <span className="font-heading font-bold text-xl text-primary">VS</span>
+                </div>
+
+                {projects.map((project, index) => (
+                    <div
+                        key={project.id}
+                        className={`transition-all duration-500 transform ${animating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
+                        style={{ transitionDelay: `${index * 100}ms` }}
+                    >
+                        <Card className="h-full flex flex-col hover:border-primary/50 transition-colors group relative overflow-hidden">
+                            {/* Image */}
+                            <div className="aspect-video bg-surface rounded-xl mb-6 overflow-hidden relative">
+                                {project.images && project.images.length > 0 ? (
+                                    <img
+                                        src={project.images[0]}
+                                        alt={project.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface to-card">
+                                        <Compass className="text-text-secondary/20" size={48} />
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
+                                    {project.liveUrl && (
+                                        <a
+                                            href={project.liveUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-3 bg-surface rounded-full hover:bg-primary hover:text-background transition-colors text-text-primary"
+                                            onClick={(e) => e.stopPropagation()}
+                                            title="View Live Site"
+                                        >
+                                            <ExternalLink size={20} />
+                                        </a>
+                                    )}
+                                    {project.repoUrl && (
+                                        <a
+                                            href={project.repoUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-3 bg-surface rounded-full hover:bg-primary hover:text-background transition-colors text-text-primary"
+                                            onClick={(e) => e.stopPropagation()}
+                                            title="View Code"
+                                        >
+                                            <Github size={20} />
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex-1 flex flex-col">
+                                <div className="flex items-start justify-between mb-2">
+                                    <h2 className="text-2xl font-heading font-bold text-text-primary">{project.title}</h2>
+                                </div>
+
+                                <p className="text-text-secondary mb-6 line-clamp-3 flex-1">{project.description}</p>
+
+                                <div className="flex flex-wrap gap-2 mb-6">
+                                    {project.techStack.slice(0, 4).map((tech, i) => (
+                                        <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 text-text-secondary border border-white/5">
+                                            {tech}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                <Button
+                                    onClick={() => handleVote(project.id)}
+                                    className="w-full gap-2 py-4 text-lg group-hover:bg-primary group-hover:text-background transition-colors"
+                                >
+                                    <Heart size={20} className={animating ? "animate-ping" : ""} />
+                                    Vote for {project.title}
+                                </Button>
+                            </div>
+                        </Card>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
