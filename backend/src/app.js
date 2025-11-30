@@ -4,7 +4,6 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const authRoutes = require("./routes/auth.routes");
 const projectRoutes = require("./routes/project.routes");
-const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -36,9 +35,19 @@ app.use(
 );
 
 // Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api/admin", adminRoutes);
+
+// Conditionally load admin routes (Ghost Mode)
+try {
+  const adminRoutes = require("./routes/admin.routes");
+  app.use("/api/admin", adminRoutes);
+  console.log("👻 Admin routes loaded (Ghost Mode active)");
+} catch (err) {
+  // Admin routes not present (Production/Git)
+  console.log("🔒 Admin routes not loaded (Standard Mode)");
+}
 
 // Health check
 app.get("/", (req, res) => {

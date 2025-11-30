@@ -72,7 +72,7 @@ export default function Navbar() {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             {user ? (
               <div className="relative" ref={menuRef}>
                 <button
