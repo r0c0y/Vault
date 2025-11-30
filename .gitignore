@@ -37,4 +37,8 @@ coverage/
 .cache/
 
 # Documentation (for development reference only)
+# Documentation (for development reference only)
 docs/
+
+# Secret Admin Dashboard
+frontend/pages/secret-dashboard.jsx
