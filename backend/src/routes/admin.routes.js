@@ -12,4 +12,9 @@ router.get('/projects', adminController.getAllProjects);
 router.delete('/users/:id', adminController.deleteUser);
 router.delete('/projects/:id', adminController.deleteProject);
 
+// Toggle Routes
+router.put('/users/:id/ban', adminController.toggleBanUser);
+router.put('/users/:id/verify', adminController.toggleVerifyUser);
+router.put('/projects/:id/feature', adminController.toggleFeatureProject);
+
 module.exports = router;

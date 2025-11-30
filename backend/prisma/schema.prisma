@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,6 +21,8 @@ model User {
   portfolioUrl String?
   resumeUrl    String?
   socials      Json?    // { github: "", linkedin: "", twitter: "", discord: "" }
+  isBanned     Boolean  @default(false)
+  isVerified   Boolean  @default(false)
   createdAt    DateTime @default(now())
   
   projects        Project[]
@@ -51,6 +54,7 @@ model Project {
   liveUrl     String?
   documentUrl String?
   isPublished Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
   viewCount   Int      @default(0)
   voteCount   Int      @default(0)
   createdAt   DateTime @default(now())
