@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const projectRoutes = require("./routes/project.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -37,16 +38,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
-
-// Conditionally load admin routes (Ghost Mode)
-try {
-  const adminRoutes = require("./routes/admin.routes");
-  app.use("/api/admin", adminRoutes);
-  console.log("👻 Admin routes loaded (Ghost Mode active)");
-} catch (err) {
-  // Admin routes not present (Production/Git)
-  console.log("🔒 Admin routes not loaded (Standard Mode)");
-}
+app.use("/api/admin", adminRoutes);
 
 // Health check
 app.get("/", (req, res) => {

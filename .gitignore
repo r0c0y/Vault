@@ -40,10 +40,4 @@ coverage/
 # Documentation (for development reference only)
 docs/
 
-# Secret Admin Dashboard
-frontend/pages/secret-dashboard.jsx
 
-# Secret Admin Backend (Ghost Mode)
-backend/src/controllers/admin.controller.js
-backend/src/middleware/admin.middleware.js
-backend/src/routes/admin.routes.js
