@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/AuthContext';
 import { getRandomProjects, voteProject } from '../lib/api';
-import Button from '../components/Button';
-import Card from '../components/Card';
+import Button from '../components/shared/Button';
+import Card from '../components/shared/Card';
 import { Heart, X, Compass, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 

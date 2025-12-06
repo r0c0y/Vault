@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useAuth } from "../lib/AuthContext";
-import Link from "next/link";
 import Router from "next/router";
+import Link from "next/link";
+import Button from '../components/shared/Button';
+import Input from '../components/shared/Input';
 
 export default function SignupPage() {
   const { signup } = useAuth();

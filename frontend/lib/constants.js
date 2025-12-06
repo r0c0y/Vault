@@ -6,5 +6,5 @@ export const TECH_STACKS = [
     'tailwindcss', 'sass', 'material ui', 'chakra ui',
     'docker', 'kubernetes', 'aws', 'gcp', 'azure',
     'typescript', 'javascript', 'html', 'css', 'graphql',
-    'prisma', 'trpc', 'clerk', 'stripe', 'vercel', 'netlify'
+    'prisma', 'trpc', 'clerk', 'stripe', 'vercel', 'netlify','others'
 ];

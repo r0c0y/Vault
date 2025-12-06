@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { createProject } from '../../lib/api';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import TechStackInput from '../../components/TechStackInput';
+import Button from '../../components/shared/Button';
+import Input from '../../components/shared/Input';
+import TechStackInput from '../../components/projects/TechStackInput';
 import { ArrowLeft, X, Upload } from 'lucide-react';
 import Link from 'next/link';
 

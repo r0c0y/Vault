@@ -2,7 +2,7 @@
   "info": {
     "name": "Vault API - Complete Collection",
     "_postman_id": "vault-api-collection-v1",
-    "description": "Complete API collection for Vault authentication system. Includes all endpoints with automatic token management.",
+    "description": "# How to Use\n\nThis collection covers all API endpoints for the Vault platform. \n\n## Import Instructions\n\n### Postman\n1. Open Postman.\n2. Click **Import** (top left).\n3. Drag and drop this `Vault_API_Collection.postman_collection.json` file.\n4. Go to **Variables** tab in the collection settings and ensure `baseUrl` is correct.\n\n### Thunder Client (VS Code)\n1. Open Thunder Client extension.\n2. Click **Collections** tab.\n3. Click the **three horizontal lines** (menu) → **Import**.\n4. Select this JSON file.\n\n## Automatic Auth\nThe collection uses scripts to automatically save your `accessToken` and `userId` after Signup/Login. You don't need to copy-paste tokens manually!",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -196,7 +196,41 @@
           "response": []
         },
         {
-          "name": "5. Logout",
+          "name": "5. Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"bio\": \"I am a developer!\",\n  \"skills\": [\"React\", \"Node.js\"],\n  \"githubUrl\": \"https://github.com/myprofile\",\n  \"linkedinUrl\": \"https://linkedin.com/in/myprofile\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Logout",
           "event": [
             {
               "listen": "test",
@@ -498,12 +532,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/auth/users/{{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "auth",
                 "users",
                 "{{userId}}"
               ]
@@ -526,6 +561,60 @@
                 "projects",
                 "user",
                 "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Follow User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users/{{userId}}/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "users",
+                "{{userId}}",
+                "follow"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Unfollow User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users/{{userId}}/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "users",
+                "{{userId}}",
+                "follow"
               ]
             }
           },
@@ -559,7 +648,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:5000",
+      "value": "http://localhost:5001",
       "type": "string"
     },
     {

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../lib/AuthContext';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
+import Button from '../../components/shared/Button';
+import Input from '../../components/shared/Input';
 import { ArrowLeft, Save, Upload } from 'lucide-react';
 import Link from 'next/link';
 

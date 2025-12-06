@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getProjectById } from '../../lib/api';
 import { useAuth } from '../../lib/AuthContext';
-import Button from '../../components/Button';
+import Button from '../../components/shared/Button';
 import { ArrowLeft, Calendar, Eye, Share2, UserPlus, Github, Globe, ExternalLink, ThumbsUp, MessageSquare, FileText } from 'lucide-react';
 import Link from 'next/link';
 

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { TECH_STACKS } from '../lib/constants';
+import { TECH_STACKS } from '../../lib/constants';
 
 
 

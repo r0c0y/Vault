@@ -38,9 +38,10 @@ coverage/
 
 # Documentation (for development reference only)
 # Documentation (for development reference only)
-docs/
+
 
 
 
 # Documentation
-docs/
+
+Vault_API_Collection.postman_collection.json

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../lib/AuthContext";
+import { useAuth } from "../../lib/AuthContext";
 import { useRouter } from "next/router";
 import { LogOut, User, Settings, Menu, X, Compass, Layout as LayoutIcon, Plus, Heart, GitCompare } from "lucide-react";
-import Button from "./Button";
+import Button from './Button';
 
 export default function Navbar() {
   const { user, logout } = useAuth();

@@ -3,8 +3,8 @@ import { useAuth } from '../lib/AuthContext';
 import { getMyProjects } from '../lib/api';
 import Link from 'next/link';
 import { Settings, MapPin, Link as LinkIcon, Github, Twitter, Linkedin } from 'lucide-react';
-import Button from '../components/Button';
-import Card from '../components/Card';
+import Button from '../components/shared/Button';
+import Card from '../components/shared/Card';
 
 export default function Profile() {
     const { user, loading: authLoading } = useAuth();
