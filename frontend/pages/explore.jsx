@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../lib/AuthContext';
 import { useRouter } from 'next/router';
 import { getProjects } from '../lib/api';
 import { Compass, Search } from 'lucide-react';
 import Pagination from '../components/shared/Pagination';
-import { gsap } from 'gsap';
 import Button from '../components/shared/Button';
 import ProjectCard from '../components/projects/ProjectCard';
 import ProjectFilters from '../components/projects/ProjectFilters';
