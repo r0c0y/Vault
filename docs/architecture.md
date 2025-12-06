@@ -22,7 +22,6 @@ Vault is a full-stack web application designed to connect developers and showcas
     - `index.jsx`: Landing page.
     - `explore.jsx`: Project discovery page.
     - `match.jsx`: "Tinder-style" project voting.
-    - `ghost-x9z2.jsx`: **Hidden Admin Dashboard (God Mode).**
 - **`components/`**: Reusable UI components.
     - `Navbar.jsx`: Responsive navigation.
     - `Card.jsx`: Project display card.
@@ -39,9 +38,8 @@ Vault is a full-stack web application designed to connect developers and showcas
     - **`controllers/`**: Business logic (handle requests, talk to DB).
         - `auth.controller.js`: Login/Signup logic.
         - `project.controller.js`: CRUD for projects.
-        - `admin.controller.js`: **God Mode logic.**
     - **`routes/`**: API endpoint definitions.
-    - **`middleware/`**: Request processing (Auth checks, Admin checks).
+    - **`middleware/`**: Request processing (Auth checks).
     - **`prisma/`**: Database schema definition (`schema.prisma`).
 
 ## Design Patterns

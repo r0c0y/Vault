@@ -106,45 +106,45 @@ export default function Match() {
         <div className="min-h-screen py-12 px-4 flex flex-col items-center">
             <div className="text-center mb-12">
                 <h1 className="text-4xl font-heading font-bold bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent mb-4">Pick Your Favorite</h1>
-                <p className="text-text-secondary text-lg">Choose the project that catches your eye. Swipe or click to vote!</p>
+                <p className="text-text-secondary text-lg">Choose the project that catches your eye. Click to vote!</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl w-full relative">
                 {/* VS Badge */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-background border-4 border-primary rounded-full w-16 h-16 flex items-center justify-center shadow-glow hidden md:flex">
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-background border-4 border-primary rounded-full w-16 h-16 flex items-center justify-center shadow-glow hidden md:flex transition-transform hover:scale-110">
                     <span className="font-heading font-bold text-xl text-primary">VS</span>
                 </div>
 
                 {projects.map((project, index) => (
                     <div
                         key={project.id}
-                        className={`transition-all duration-500 ease-out transform ${animating
-                            ? index === 0 ? '-translate-x-full opacity-0' : 'translate-x-full opacity-0'
-                            : 'translate-x-0 opacity-100'
+                        className={`transition-all duration-500 ease-in-out transform ${animating
+                            ? 'opacity-0 scale-95 blur-sm' // Exit state: Fade out, shrink slightly, blur
+                            : 'opacity-100 scale-100 blur-0' // Enter state: Full visibility
                             }`}
-                        style={{ transitionDelay: animating ? '0ms' : `${index * 200}ms` }}
+                        style={{ transitionDelay: animating ? '0ms' : `${index * 150}ms` }}
                     >
-                        <Card className="h-full flex flex-col hover:border-primary/50 transition-colors group relative overflow-hidden">
+                        <Card className="h-full flex flex-col hover:border-primary/50 transition-all duration-300 group relative overflow-hidden hover:shadow-2xl hover:-translate-y-1">
                             {/* Image */}
                             <div className="aspect-video bg-surface rounded-xl mb-6 overflow-hidden relative">
                                 {project.images && project.images.length > 0 ? (
                                     <img
                                         src={project.images[0]}
                                         alt={project.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface to-card">
                                         <Compass className="text-text-secondary/20" size={48} />
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
                                     {project.liveUrl && (
                                         <a
                                             href={project.liveUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-3 bg-surface rounded-full hover:bg-primary hover:text-background transition-colors text-text-primary"
+                                            className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
                                             onClick={(e) => e.stopPropagation()}
                                             title="View Live Site"
                                         >
@@ -156,7 +156,7 @@ export default function Match() {
                                             href={project.repoUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-3 bg-surface rounded-full hover:bg-primary hover:text-background transition-colors text-text-primary"
+                                            className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
                                             onClick={(e) => e.stopPropagation()}
                                             title="View Code"
                                         >
@@ -169,14 +169,14 @@ export default function Match() {
                             {/* Content */}
                             <div className="flex-1 flex flex-col">
                                 <div className="flex items-start justify-between mb-2">
-                                    <h2 className="text-2xl font-heading font-bold text-text-primary">{project.title}</h2>
+                                    <h2 className="text-2xl font-heading font-bold text-text-primary group-hover:text-primary transition-colors">{project.title}</h2>
                                 </div>
 
                                 <p className="text-text-secondary mb-6 line-clamp-3 flex-1">{project.description}</p>
 
                                 <div className="flex flex-wrap gap-2 mb-6">
                                     {project.techStack.slice(0, 4).map((tech, i) => (
-                                        <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 text-text-secondary border border-white/5">
+                                        <span key={i} className="text-xs px-2 py-1 rounded-md bg-surface text-text-secondary border border-white/5">
                                             {tech}
                                         </span>
                                     ))}
@@ -184,9 +184,9 @@ export default function Match() {
 
                                 <Button
                                     onClick={() => handleVote(project.id)}
-                                    className="w-full py-4 text-lg text-white hover:opacity-90 transition-opacity border-none shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500"
+                                    className="w-full py-4 text-lg text-white font-medium shadow-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90 active:scale-95 transition-all"
                                 >
-                                    Vote for {project.title}
+                                    Vote Project
                                 </Button>
                             </div>
                         </Card>
