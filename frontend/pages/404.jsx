@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Button from '../components/shared/Button';
 import Head from 'next/head';
 import { Compass } from 'lucide-react';
