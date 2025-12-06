@@ -1,26 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../lib/AuthContext';
-import { getRandomProjects, voteProject } from '../lib/api';
+import { getRandomProjects } from '../lib/api';
 import Button from '../components/shared/Button';
 import Card from '../components/shared/Card';
-import { Heart, X, Compass, ExternalLink, Github } from 'lucide-react';
+import { Compass, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Match() {
     const { user, loading: authLoading, authFetch } = useAuth();
-    const router = useRouter();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [animating, setAnimating] = useState(false);
 
-    useEffect(() => {
-        if (!authLoading && user) {
-            fetchProjects();
-        }
-    }, [user, authLoading]);
-
-    const fetchProjects = async () => {
+    const fetchProjects = useCallback(async () => {
         setLoading(true);
         try {
             const res = await getRandomProjects();
@@ -35,7 +27,13 @@ export default function Match() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (!authLoading && user) {
+            fetchProjects();
+        }
+    }, [user, authLoading, fetchProjects]);
 
     const handleVote = async (selectedId) => {
         if (animating) return;
