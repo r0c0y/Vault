@@ -9,6 +9,7 @@ A modern, responsive frontend for the Vault Developer Portfolio & Collaboration 
 - **Work Shelf**: Manage your personal projects.
 - **Explore Stream**: Discover community projects with masonry grid layout.
 - **Match Mode**: "Swap-style" matching to find interesting projects.
+- **Newsletter**: Early access waitlist with email verification.
 - **Responsive Design**: Looks great on desktop and mobile.
 
 ## 🛠 Tech Stack

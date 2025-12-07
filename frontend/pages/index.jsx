@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Hero from '../components/home/Hero';
+import Showcase from '../components/home/Showcase';
 import FeatureGrid from '../components/home/FeatureGrid';
 import CallToAction from '../components/home/CallToAction';
 
@@ -13,6 +14,7 @@ export default function Home() {
 
             <main>
                 <Hero />
+                <Showcase />
                 <FeatureGrid />
                 <CallToAction />
             </main>

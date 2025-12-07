@@ -3,6 +3,7 @@ import Button from '../shared/Button';
 import { useAuth } from '../../lib/AuthContext';
 import { useState } from 'react';
 import API from '../../lib/api';
+import useSound from '../../hooks/useSound';
 import { Mail, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
 
 export default function CallToAction() {
@@ -10,6 +11,7 @@ export default function CallToAction() {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('idle'); // idle, loading, success, error
     const [message, setMessage] = useState('');
+    const playSuccess = useSound('/sounds/pop.mp3');
 
     const handleSubscribe = async (e) => {
         e.preventDefault();
@@ -19,6 +21,7 @@ export default function CallToAction() {
         try {
             await API.post('/newsletter/subscribe', { email });
             setStatus('success');
+            playSuccess(); // Audio feedback
             setEmail('');
             setMessage('Thanks for joining! We\'ll keep you posted.');
         } catch (error) {
@@ -29,8 +32,11 @@ export default function CallToAction() {
 
     return (
         <section className="py-24 relative overflow-hidden">
-            {/* Glossy Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5"></div>
+            {/* Background Effects */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
+                <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
+                <div className="absolute bottom-0 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
+            </div>
 
             <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
                 <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
@@ -61,7 +67,7 @@ export default function CallToAction() {
 
                 {/* Early Access / Newsletter Section - Horizontal & Compact */}
                 <div className="max-w-2xl mx-auto">
-                    <div className="bg-surface/50 backdrop-blur-sm border border-white/10 rounded-xl p-1 relative overflow-hidden group hover:border-primary/20 transition-colors">
+                    <div className="bg-surface/50 backdrop-blur-sm border border-white/10 rounded-xl p-1 relative overflow-hidden group hover:border-primary/20 focus-within:border-primary/50 focus-within:shadow-glow transition-all duration-300">
                         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                         <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row items-center gap-2 p-2">
