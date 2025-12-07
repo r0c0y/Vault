@@ -12,7 +12,7 @@ module.exports = {
         "text-primary": "#F2F4F7",
         "text-secondary": "#A3A9B6",
         border: "rgba(255,255,255,0.06)",
-        
+
         // Accents - Pastel (Soft, Welcoming)
         primary: "#89B4FA", // Pastel Sky Blue
         secondary: "#A6E3A1", // Pastel Mint
@@ -33,6 +33,16 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'subtle-glow': 'linear-gradient(135deg, rgba(137, 180, 250, 0.03), rgba(166, 227, 161, 0.03))',
+      },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'radar': 'radar 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+      },
+      keyframes: {
+        radar: {
+          '0%': { transform: 'scale(1)', opacity: '0.6' },
+          '100%': { transform: 'scale(2.5)', opacity: '0' },
+        }
       }
     },
   },

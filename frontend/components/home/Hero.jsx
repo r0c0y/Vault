@@ -15,9 +15,12 @@ export default function Hero() {
             </div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-                    <span className="flex h-2 w-2 rounded-full bg-green-500 animate-ping"></span>
-                    <span className="text-sm font-medium text-text-secondary">Community is Live</span>
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface/50 border border-white/5 shadow-glass backdrop-blur-sm mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700 hover:border-white/10 transition-colors cursor-default">
+                    <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-radar absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span>
+                    </span>
+                    <span className="text-sm font-medium text-text-primary/90 tracking-wide">Community is Live</span>
                 </div>
 
                 <h1 className="text-5xl md:text-7xl font-heading font-bold text-text-primary tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100">
