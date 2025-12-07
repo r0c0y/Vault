@@ -1,0 +1,108 @@
+import Link from 'next/link';
+import Button from '../shared/Button';
+import { useAuth } from '../../lib/AuthContext';
+import { useState } from 'react';
+import API from '../../lib/api';
+import { Mail, ArrowRight, Loader2, CheckCircle } from 'lucide-react';
+
+export default function CallToAction() {
+    const { user } = useAuth();
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState('idle'); // idle, loading, success, error
+    const [message, setMessage] = useState('');
+
+    const handleSubscribe = async (e) => {
+        e.preventDefault();
+        if (!email) return;
+
+        setStatus('loading');
+        try {
+            await API.post('/newsletter/subscribe', { email });
+            setStatus('success');
+            setEmail('');
+            setMessage('Thanks for joining! We\'ll keep you posted.');
+        } catch (error) {
+            setStatus('error');
+            setMessage(error.response?.data?.message || 'Something went wrong. Please try again.');
+        }
+    };
+
+    return (
+        <section className="py-24 relative overflow-hidden">
+            {/* Glossy Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5"></div>
+
+            <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                    Ready to Ship?
+                </h2>
+                <p className="text-xl text-text-secondary mb-10">
+                    Join thousands of developers sharing their journey. It's free and open source.
+                </p>
+
+                {/* Main Action Button */}
+                <div className="mb-12">
+                    {user ? (
+                        <Link href="/explore">
+                            <Button className="h-14 px-10 text-lg shadow-glow hover:scale-105 transition-transform">
+                                Explore Projects
+                                <ArrowRight className="ml-2 w-5 h-5" />
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link href="/signup">
+                            <Button className="h-14 px-10 text-lg shadow-glow hover:scale-105 transition-transform">
+                                Get Started
+                                <ArrowRight className="ml-2 w-5 h-5" />
+                            </Button>
+                        </Link>
+                    )}
+                </div>
+
+                {/* Early Access / Newsletter Section - Horizontal & Compact */}
+                <div className="max-w-2xl mx-auto">
+                    <div className="bg-surface/50 backdrop-blur-sm border border-white/10 rounded-xl p-1 relative overflow-hidden group hover:border-primary/20 transition-colors">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row items-center gap-2 p-2">
+                            <div className="flex-1 flex items-center gap-3 px-4 py-2 w-full">
+                                <Mail size={20} className="text-text-secondary shrink-0" />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter your email for early access..."
+                                    className="bg-transparent border-none outline-none text-text-primary placeholder:text-text-secondary w-full"
+                                    required
+                                />
+                            </div>
+
+                            <Button
+                                type="submit"
+                                variant="secondary"
+                                className="w-full sm:w-auto px-6 whitespace-nowrap min-w-[140px]"
+                                disabled={status === 'loading' || status === 'success'}
+                            >
+                                {status === 'loading' ? (
+                                    <Loader2 className="animate-spin w-5 h-5 mx-auto" />
+                                ) : status === 'success' ? (
+                                    <span className="flex items-center gap-2 text-green-400">
+                                        <CheckCircle size={18} /> Joined
+                                    </span>
+                                ) : (
+                                    'Join Waitlist'
+                                )}
+                            </Button>
+                        </form>
+                    </div>
+                    {status === 'error' && (
+                        <p className="mt-3 text-sm text-red-400 animate-in fade-in">{message}</p>
+                    )}
+                    {status === 'success' && (
+                        <p className="mt-3 text-sm text-green-400 animate-in fade-in">{message}</p>
+                    )}
+                </div>
+            </div>
+        </section>
+    );
+}
