@@ -27,11 +27,26 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow">
-        <h1 className="text-2xl font-semibold mb-6 text-blue-800">Create account</h1>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/assets/auth-bg-clean.png"
+          alt=""
+          className="w-full h-full object-cover opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/80"></div>
+      </div>
 
-        {err && <div className="text-red-600 mb-4 text-sm">{err}</div>}
+      {/* Decorative Right Brace */}
+      <div className="absolute top-1/2 -translate-y-1/2 -right-10 opacity-10 blur-[1px] select-none pointer-events-none z-0">
+        <img src="/assets/brace-right.webp" alt="" className="h-[600px] w-auto animate-pulse-slow" />
+      </div>
+
+      <div className="w-full max-w-md bg-surface/80 backdrop-blur-xl p-8 rounded-2xl border border-white/10 z-10">
+        <h1 className="text-3xl font-heading font-bold mb-6 text-text-primary">Create account</h1>
+
+        {err && <div className="text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg p-3 mb-4 text-sm">{err}</div>}
 
         <form onSubmit={onSubmit} className="space-y-4">
           <input
@@ -39,7 +54,7 @@ export default function SignupPage() {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Full name"
-            className="w-full p-3 border rounded text-slate-900"
+            className="w-full p-3 border border-white/10 rounded-lg bg-background/50 text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
           />
 
           <input
@@ -48,7 +63,7 @@ export default function SignupPage() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="Email"
-            className="w-full p-3 border rounded text-slate-900"
+            className="w-full p-3 border border-white/10 rounded-lg bg-background/50 text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
           />
 
           <input
@@ -57,20 +72,20 @@ export default function SignupPage() {
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             placeholder="Password"
-            className="w-full p-3 border rounded text-slate-900"
+            className="w-full p-3 border border-white/10 rounded-lg bg-background/50 text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
           />
 
           <button
             disabled={loading}
-            className="w-full py-3 rounded bg-slate-800 text-white disabled:opacity-50"
+            className="w-full py-3 rounded-lg bg-primary text-background font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow hover:shadow-glow-lg"
           >
             {loading ? "Creating..." : "Create account"}
           </button>
         </form>
 
-        <div className="mt-4 text-sm text-slate-600">
+        <div className="mt-6 text-sm text-text-secondary text-center">
           Already have an account?{" "}
-          <Link href="/login" className="text-slate-800 font-medium">
+          <Link href="/login" className="text-primary font-medium hover:text-primary/80 transition-colors">
             Log in
           </Link>
         </div>

@@ -4,6 +4,8 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const projectRoutes = require("./routes/project.routes");
 
+const newsletterRoutes = require("./routes/newsletter.routes");
+
 const app = express();
 
 // Middleware
@@ -36,6 +38,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 
 // Health check
 app.get("/", (req, res) => {

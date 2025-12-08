@@ -72,3 +72,9 @@ model CollaborationRequest {
   status    String   @default("pending") // pending, approved, rejected
   createdAt DateTime @default(now())
 }
+
+model Subscriber {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

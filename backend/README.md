@@ -56,3 +56,4 @@ Server runs on [http://localhost:4000](http://localhost:4000).
 ## 🔌 API Endpoints (Brief)
 - **Auth**: `/api/auth` (Signup, Login, Refresh, Logout, Me)
 - **Projects**: `/api/projects` (CRUD, Match, Vote)
+- **Newsletter**: `/api/newsletter` (Subscribe)

@@ -13,6 +13,10 @@ export default function CallToAction() {
     const [message, setMessage] = useState('');
     const playSuccess = useSound('/sounds/pop.mp3');
 
+    const handleMascotClick = () => {
+        alert('🤖 AI Features Coming Soon! Stay tuned for exciting updates.');
+    };
+
     const handleSubscribe = async (e) => {
         e.preventDefault();
         if (!email) return;
@@ -109,6 +113,24 @@ export default function CallToAction() {
                     )}
                 </div>
             </div>
+
+            {/* Mimo Mascot - positioned relative to section, not the constrained container */}
+            <div className="absolute bottom-8 right-4 hidden md:block select-none pointer-events-none z-40">
+                <img
+                    src="/assets/mimo.png"
+                    alt="Mimo Mascot"
+                    className="w-12 h-12 object-contain opacity-80 hover:opacity-100 transition-opacity"
+                    style={{
+                        animation: 'subtle-bounce 4s ease-in-out infinite'
+                    }}
+                />
+            </div>
+            <style jsx>{`
+                @keyframes subtle-bounce {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                }
+            `}</style>
         </section>
     );
 }

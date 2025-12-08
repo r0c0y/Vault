@@ -12,6 +12,11 @@ export default function Hero() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
                 <div className="absolute top-40 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
+
+                {/* Decorative Left Brace */}
+                <div className="absolute top-1/2 -translate-y-1/2 -left-20 opacity-20 blur-[1px] select-none">
+                    <img src="/assets/brace-left.webp" alt="" className="h-[500px] w-auto animate-pulse-slow" />
+                </div>
             </div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
