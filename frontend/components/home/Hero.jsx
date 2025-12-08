@@ -11,22 +11,30 @@ export default function Hero() {
             {/* Background Effects */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
-                <div className="absolute top-40 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
-
-                {/* Decorative Left Brace */}
-                <div className="absolute top-1/2 -translate-y-1/2 -left-20 opacity-20 blur-[1px] select-none">
-                    <img src="/assets/brace-left.webp" alt="" className="h-[500px] w-auto animate-pulse-slow" />
-                </div>
+                <div className="absolute bottom-0 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
             </div>
 
+            {/* Decorative Braces */}
+            {/* Left Brace */}
+            <div className="absolute top-10 left-0 w-64 h-auto opacity-20 blur-[1px] pointer-events-none hidden lg:block">
+                <img
+                    src="/assets/opening-brace.webp"
+                    alt=""
+                    className="w-full h-auto animate-pulse-slow"
+                />
+            </div>
+
+            {/* Right Brace - Flipped */}
+            <div className="absolute top-10 right-0 w-64 h-auto opacity-20 blur-[1px] pointer-events-none hidden lg:block transform scale-x-[-1]">
+                <img
+                    src="/assets/opening-brace.webp"
+                    alt=""
+                    className="w-full h-auto animate-pulse-slow"
+                />
+            </div>
+
+
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface/50 border border-white/5 shadow-glass backdrop-blur-sm mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700 hover:border-white/10 transition-colors cursor-default">
-                    <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-radar absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span>
-                    </span>
-                    <span className="text-sm font-medium text-text-primary/90 tracking-wide">Community is Live</span>
-                </div>
 
                 <h1 className="text-5xl md:text-7xl font-heading font-bold text-text-primary tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100">
                     Showcase Your Code <br />

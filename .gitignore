@@ -1,7 +1,14 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 package-lock.json
-yarn.lock
+
+# documentation (personal study notes)
+docs2/
+
+# Postman collection
+Vault_API_Collection.postman_collection.json
 
 # Environment variables
 .env
